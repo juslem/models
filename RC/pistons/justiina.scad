@@ -31,7 +31,6 @@ disc_height = clip_inbetween_height /2;
 //Lock parameters
 lock_inner_scaledown = 0.95;
 lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
-lock_length = shaft_diameter + 1.2;
 lock_height = disc_height;
 
 top_clip_recess_radius = clip_diameter/2 + 0.1;
@@ -118,15 +117,15 @@ module shaft() {
 
 
 //Actual drawing calls
+
+//Use this to make a mock assembly
 module draw_demo() {
     rotate([180,0,0]) translate([0,0, - (disc_height - bottom_height)]) holed_valve_disc();
-
 
     translate([0,0, - clip_inbetween_height/2 + clip_thickness/2])
     rotate([180,0,0]) holed_piston_disc();     
     translate([0,0, -1]) shaft();
-    //translate([0,0, - bottom_height + clip_thickness/2])
-
+    
     translate([0,0, + clip_thickness/2])
     draw_clip(); //upper clip
     translate([0,0, - clip_inbetween_height - clip_thickness/2]) draw_clip(); //lower clip
@@ -138,6 +137,7 @@ module draw_clip() {
     }
 }
 
+//TODO
 module draw_animation() {
         
     holed_piston_disc();
