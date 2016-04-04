@@ -1,22 +1,36 @@
+//Shock cylinder inner diameter
+cylinder_diameter = 13;  //12.1 xray, 13mm big bore (schumi)
+
+//Shock shaft diameter
 shaft_diameter = 3.16; //schumi 3.16
-cylinder_diameter = 12.1;  //12.1 xray
+
+//Distance of holes from disc rim
 hole_edge_distance = 1.2;  //12mm borelle 1.2?
+
+//Distance between e-clips
 clip_inbetween_height = 2.8; //schumi 2.8
 
 //TODO: opening gap as parameter
 
+//configure how strong the valve disc bottom floor is
+bottom_height = 0.6; 
+
+//e-clip configuration
 clip_diameter = 6.1; //schumi 6.1
 clip_thickness = 0.3; //schumi 0.3
-bottom_height = 0.6; //configurable as how strong the valve disc bottom floor is
 
+//Hole configuration
 num_piston_holes = 3;
 num_valve_holes = 6;
-piston_hole_diameter = 1.6;
+piston_hole_diameter = 1.8;
 valve_hole_diameter = 1.0;
 
-disc_height = clip_inbetween_height /2;  //empirical: schumin clippiväliin 1.5
+//TODO: allow to parameterize differing disc sizes
+disc_height = clip_inbetween_height /2;
+
+//Lock parameters
 lock_inner_scaledown = 0.95;
-lock_width = shaft_diameter + (cylinder_diameter/3 - hole_edge_distance);
+lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
 lock_length = shaft_diameter + 1.2;
 lock_height = disc_height;
 
@@ -32,7 +46,7 @@ render_disc_distance = 0;
 
 $vpr = [70, 0, $t * 360];
 
-$fn=20;
+$fn=120;
 
 //male lock shape from adding lock (scaled down to fit the female shape)
 module piston_disc() {
