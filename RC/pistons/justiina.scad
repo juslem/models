@@ -2,7 +2,7 @@
 cylinder_diameter = 13;  //12.1 xray, 13mm big bore (schumi)
 
 //Shock shaft diameter
-shaft_diameter = 3.16; //schumi 3.16
+shaft_diameter = 3.22; //schumi 3.16
 
 //Distance of holes from disc rim
 hole_edge_distance = 1.2;  //12mm borelle 1.2?
@@ -30,10 +30,10 @@ disc_height = clip_inbetween_height /2;
 
 //Lock parameters
 lock_inner_scaledown = 0.95;
-lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
+lock_width = shaft_diameter + (cylinder_diameter/2.5 - hole_edge_distance);
 lock_height = disc_height;
 
-top_clip_recess_radius = clip_diameter/2 + 0.1;
+top_clip_recess_radius = clip_diameter/2 + 0.6;
 
 //mismatches all holes
 //would require disc sides to pass some oil
