@@ -1,37 +1,85 @@
+//Author: Jussi Lemmetty
+//This work is licensed under a
+//Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License
+//http://creativecommons.org/licenses/by-nc-nd/4.0/
+
+/*
+data_vector = [cylinder_diameter,
+                shaft_diameter,  
+                bottom_height,
+                [ clip_inbetween_height,
+                 clip_diameter,
+                 clip_thickness],
+                [ num_piston_holes
+                  piston_hole_diameter
+                  num_valve_holes
+                  valve_hole_diameter]                
+               ]
+*/
+
+//////////////////////////////////////////////
+// Basher Sabertooth shock configuration
+///////////////////////////////////////////////
+sabertooth_clips = [3.5, 7, 0.5];  //let's leave a shim-space with 0.5mm)
+sabertooth_holes1 = [3, 2.0, 6, 1.5];
+configuration_sabertooth1 = [16, 2.4, 0.7, sabertooth_clips, sabertooth_holes1];
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+// XRay shock configuration
+///////////////////////////////////////////////
+xray_clips = [2, 6, 0.3];
+xray_holes1 = [3, 1.4, 6, 1.2];
+xray_holes2 = [2, 1.6, 4, 1.4];
+xray_holes3 = [2, 1.7, 4, 1.4];
+configuration_xray1 = [12.1, 3.0, 0.4, xray_clips, xray_holes1];
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
+// Schumacher Big Bore shock configuration
+///////////////////////////////////////////////
+schumi_clips = [2.8, 6.1, 0.3];
+schumi_holes1 = [3, 1.4, 6, 1.2];
+configuration_schumi1 = [13, 3.25, 0.4, schumi_clips, schumi_holes1];
+///////////////////////////////////////////////
+
+//Select the used configuration here:
+configuration = configuration_sabertooth1;
+
 //Shock cylinder inner diameter
-cylinder_diameter = 16;  //12.1 xray, 13mm big bore (schumi), Sabertooth 16mm
+cylinder_diameter = configuration[0];
 
 //Shock shaft diameter
-shaft_diameter = 2.5; //schumi 3.16, Sabertooth disc center hole 2.4mm (shaft 3.5mm)
+shaft_diameter = configuration[1];
 
 //Distance of holes from disc rim
-hole_edge_distance = 1.2;  //12mm borelle 1.2?
-
-//Distance between e-clips
-clip_inbetween_height = 3.5; //schumi 2.8, Sabertooth 3.5mm
+hole_edge_distance = cylinder_diameter/12;
 
 //TODO: opening gap as parameter
 
 //configure how strong the valve disc bottom floor is
-bottom_height = 0.6; 
+bottom_height = configuration[2];
 
 //e-clip configuration
-clip_diameter = 7; //schumi 6.1, Sabertooth nut 5mm
-clip_thickness = 0.5; //schumi 0.3, Sabertooth 0mm (let's leave a shim-space with 0.5mm)
+//Distance between e-clips
+clip_inbetween_height = configuration[3][0];
+clip_diameter = configuration[3][1];
+clip_thickness = configuration[3][2];
 
 //Hole configuration
-num_piston_holes = 3;
-num_valve_holes = 6;
-piston_hole_diameter = 1.8;
-valve_hole_diameter = 1.0;
+num_piston_holes = configuration[4][0];
+piston_hole_diameter = configuration[4][1];
+num_valve_holes = configuration[4][2];
+valve_hole_diameter = configuration[4][3];
 
 //TODO: allow to parameterize differing disc sizes
 disc_height = clip_inbetween_height /2;
 
 //Lock parameters
-lock_inner_scaledown = 0.95;
+lock_inner_scaledown = 0.92;
 lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
 lock_height = disc_height;
+lock_length = cylinder_diameter/2; //not used in cylindrical lock shape
 
 top_clip_recess_radius = clip_diameter/2 + 0.6;
 
@@ -67,10 +115,12 @@ module valve_disc() {
 //shape used to lock the disc rotation
 module lock() {
     //basic rectangular shape
-    //cube([lock_length, lock_width, lock_height], true);
+    cube([lock_length, lock_width, lock_height], true);
     
     //n-sided cylinder
-    cylinder($fn=5, r1= lock_width/2, r2=lock_width/2, h=lock_height, center=true);
+    //cylinder($fn=5, r1= lock_width/2, r2=lock_width/2, h=lock_height, center=true);
+
+    //TODO: cross-shaped lock?
 }
 
 module holed_piston_disc() {
