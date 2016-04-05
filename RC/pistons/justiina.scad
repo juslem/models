@@ -1,14 +1,14 @@
 //Shock cylinder inner diameter
-cylinder_diameter = 13;  //12.1 xray, 13mm big bore (schumi)
+cylinder_diameter = 16;  //12.1 xray, 13mm big bore (schumi), Sabertooth 16mm
 
 //Shock shaft diameter
-shaft_diameter = 3.22; //schumi 3.16
+shaft_diameter = 2.5; //schumi 3.16, Sabertooth disc center hole 2.4mm (shaft 3.5mm)
 
 //Distance of holes from disc rim
 hole_edge_distance = 1.2;  //12mm borelle 1.2?
 
 //Distance between e-clips
-clip_inbetween_height = 2.8; //schumi 2.8
+clip_inbetween_height = 3.5; //schumi 2.8, Sabertooth 3.5mm
 
 //TODO: opening gap as parameter
 
@@ -16,8 +16,8 @@ clip_inbetween_height = 2.8; //schumi 2.8
 bottom_height = 0.6; 
 
 //e-clip configuration
-clip_diameter = 6.1; //schumi 6.1
-clip_thickness = 0.3; //schumi 0.3
+clip_diameter = 7; //schumi 6.1, Sabertooth nut 5mm
+clip_thickness = 0.5; //schumi 0.3, Sabertooth 0mm (let's leave a shim-space with 0.5mm)
 
 //Hole configuration
 num_piston_holes = 3;
@@ -30,7 +30,7 @@ disc_height = clip_inbetween_height /2;
 
 //Lock parameters
 lock_inner_scaledown = 0.95;
-lock_width = shaft_diameter + (cylinder_diameter/2.5 - hole_edge_distance);
+lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
 lock_height = disc_height;
 
 top_clip_recess_radius = clip_diameter/2 + 0.6;
@@ -45,7 +45,7 @@ render_disc_distance = 0;
 
 $vpr = [70, 0, $t * 360];
 
-$fn=120;
+$fn=20;
 
 //male lock shape from adding lock (scaled down to fit the female shape)
 module piston_disc() {
