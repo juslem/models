@@ -33,18 +33,24 @@ xray_holes1 = [3, 1.4, 6, 1.2];
 xray_holes2 = [2, 1.6, 4, 1.4];
 xray_holes3 = [2, 1.7, 4, 1.4];
 configuration_xray1 = [12.1, 3.0, 0.4, xray_clips, xray_holes1];
+configuration_xray2 = [12.1, 3.0, 0.4, xray_clips, xray_holes2];
+configuration_xray3 = [12.1, 3.0, 0.4, xray_clips, xray_holes3];
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
 // Schumacher Big Bore shock configuration
 ///////////////////////////////////////////////
-schumi_clips = [2.8, 6.1, 0.3];
-schumi_holes1 = [3, 1.4, 6, 1.2];
+schumi_clips = [2.2, 6.3, 0.3]; //measured clip-space is 2.8, measured clip-dia 6.1
+schumi_holes1 = [3, 1.5, 6, 1.3];
 configuration_schumi1 = [13, 3.25, 0.4, schumi_clips, schumi_holes1];
 ///////////////////////////////////////////////
 
 //Select the used configuration here:
-configuration = configuration_sabertooth1;
+//configuration = configuration_sabertooth1;
+//configuration = configuration_xray2;
+configuration = configuration_schumi1;
+
+$fn=120;
 
 //Shock cylinder inner diameter
 cylinder_diameter = configuration[0];
@@ -55,7 +61,7 @@ shaft_diameter = configuration[1];
 //Distance of holes from disc rim
 hole_edge_distance = cylinder_diameter/12;
 
-//TODO: opening gap as parameter
+//TODO: opening gap as parameter: solve to bottom_height
 
 //configure how strong the valve disc bottom floor is
 bottom_height = configuration[2];
@@ -75,13 +81,14 @@ valve_hole_diameter = configuration[4][3];
 //TODO: allow to parameterize differing disc sizes
 disc_height = clip_inbetween_height /2;
 
-//Lock parameters
-lock_inner_scaledown = 0.92;
-lock_width = shaft_diameter + (cylinder_diameter/4 - hole_edge_distance);
+//Lock parameters for square lock shape
+lock_inner_scaledown = 0.88;  //found by experimentation, depends on printer calibration also
+lock_width = sqrt((clip_diameter*clip_diameter)/2) - 0.6; 
 lock_height = disc_height;
-lock_length = cylinder_diameter/2; //not used in cylindrical lock shape
+lock_length = lock_width;
+//lock_length = cylinder_diameter/2.3; //not used in cylindrical lock shape
 
-top_clip_recess_radius = clip_diameter/2 + 0.6;
+top_clip_recess_radius = clip_diameter/2;
 
 //mismatches all holes
 //would require disc sides to pass some oil
@@ -92,8 +99,6 @@ hole_offset_degrees = 0;
 render_disc_distance = 0;
 
 $vpr = [70, 0, $t * 360];
-
-$fn=20;
 
 //male lock shape from adding lock (scaled down to fit the female shape)
 module piston_disc() {
@@ -117,8 +122,8 @@ module lock() {
     //basic rectangular shape
     cube([lock_length, lock_width, lock_height], true);
     
-    //n-sided cylinder
-    //cylinder($fn=5, r1= lock_width/2, r2=lock_width/2, h=lock_height, center=true);
+    //3-sided cylinder
+    //rotate ([0,0,60]) cylinder($fn=3, r1= clip_diameter/2, r2=clip_diameter/2, h=lock_height, center=true);
 
     //TODO: cross-shaped lock?
 }
@@ -196,12 +201,12 @@ module draw_animation() {
         holed_valve_disc();
     }
 
-module draw_print(num_of_pairs=1) {
+module draw_print() {
 //       for ( i = [0:num_of_pairs+1] ) {
            translate([cylinder_diameter + 2, 0,disc_height]) rotate([180,0,0]) holed_piston_disc();
            translate([0, 0,disc_height]) rotate([180,0,0]) holed_valve_disc();
   //     }
 }
 
-draw_print();  
+draw_print();
 //draw_demo();
