@@ -21,8 +21,10 @@ data_vector = [cylinder_diameter,
 // Basher Sabertooth shock configuration
 ///////////////////////////////////////////////
 sabertooth_clips = [3.5, 7, 0.5];  //let's leave a shim-space with 0.5mm)
-sabertooth_holes1 = [3, 2.0, 6, 1.5];
+sabertooth_holes1 = [3, 2.0, 6, 1.5]; //first print+installment
+sabertooth_holes2 = [3, 3, 6, 2];
 configuration_sabertooth1 = [16, 2.4, 0.7, sabertooth_clips, sabertooth_holes1];
+configuration_sabertooth2 = [16, 2.4, 0.7, sabertooth_clips, sabertooth_holes2];
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
@@ -41,14 +43,17 @@ configuration_xray3 = [12.1, 3.0, 0.4, xray_clips, xray_holes3];
 // Schumacher Big Bore shock configuration
 ///////////////////////////////////////////////
 schumi_clips = [2.2, 6.3, 0.3]; //measured clip-space is 2.8, measured clip-dia 6.1
-schumi_holes1 = [3, 1.5, 6, 1.3];
+schumi_clips2 = [2, 6.3, 0.3]; //measured clip-space is 2.8, measured clip-dia 6.1
+schumi_holes1 = [3, 1.5, 6, 1.3]; //first print+installment
+schumi_holes2 = [3, 1.7, 6, 1.4];
 configuration_schumi1 = [13, 3.25, 0.4, schumi_clips, schumi_holes1];
+configuration_schumi2 = [12.9, 3.25, 0.4, schumi_clips2, schumi_holes2];
 ///////////////////////////////////////////////
 
 //Select the used configuration here:
-//configuration = configuration_sabertooth1;
+configuration = configuration_schumi2;
 //configuration = configuration_xray2;
-configuration = configuration_schumi1;
+//configuration = configuration_schumi1;
 
 $fn=120;
 
@@ -78,13 +83,14 @@ piston_hole_diameter = configuration[4][1];
 num_valve_holes = configuration[4][2];
 valve_hole_diameter = configuration[4][3];
 
-//TODO: allow to parameterize differing disc sizes
-disc_height = clip_inbetween_height /2;
+//Allow to parameterize differing disc sizes
+piston_disc_height = clip_inbetween_height /2 - 0.2;
+valve_disc_height = clip_inbetween_height /2  +0.2;
 
 //Lock parameters for square lock shape
-lock_inner_scaledown = 0.88;  //found by experimentation, depends on printer calibration also
+lock_inner_scaledown = 0.80;  //found by experimentation, depends on printer calibration also
 lock_width = sqrt((clip_diameter*clip_diameter)/2) - 0.6; 
-lock_height = disc_height;
+lock_height = valve_disc_height;
 lock_length = lock_width;
 //lock_length = cylinder_diameter/2.3; //not used in cylindrical lock shape
 
@@ -102,18 +108,18 @@ $vpr = [70, 0, $t * 360];
 
 //male lock shape from adding lock (scaled down to fit the female shape)
 module piston_disc() {
-  translate ([0,0, - disc_height/2]) 
+  translate ([0,0, - piston_disc_height/2]) 
   scale([lock_inner_scaledown]) lock();
-  base_disc(); 
+  base_disc(piston_disc_height); 
 }
 
 //female lock shape from difference
 module valve_disc() {
   difference() {
-    base_disc();
+    base_disc(valve_disc_height);
     translate ([0,0, + lock_height/2 + bottom_height]) lock();
     translate ([0,0,0]) lock();
-    translate ([0,0,-0.1]) cylinder(disc_height - bottom_height, top_clip_recess_radius, top_clip_recess_radius);
+    translate ([0,0,-0.1]) cylinder(valve_disc_height - bottom_height, top_clip_recess_radius, top_clip_recess_radius);
   } 
 }
 
@@ -152,8 +158,8 @@ module valve_holes() {
 }
 
 
-module base_disc() {
-    color("DimGray", 0.8) cylinder(disc_height,cylinder_diameter/2,cylinder_diameter/2);
+module base_disc(render_disc_height = 5) {
+    color("DimGray", 0.8) cylinder(render_disc_height,cylinder_diameter/2,cylinder_diameter/2);
 }
 
 module holes(offset=0, num_of_holes=3, dia=1) {
@@ -164,7 +170,7 @@ module holes(offset=0, num_of_holes=3, dia=1) {
 
 //used primarily for shaft hole punching
 module shaft() {
-    translate ([0,0,-40 + disc_height + clip_thickness]) color("DarkGoldenrod", 1) cylinder(40, shaft_diameter/2, shaft_diameter/2);
+    translate ([0,0,-40 + valve_disc_height + clip_thickness]) color("DarkGoldenrod", 1) cylinder(40, shaft_diameter/2, shaft_diameter/2);
 }
 
 
@@ -175,7 +181,7 @@ module shaft() {
 
 //Use this to make a mock assembly
 module draw_demo() {
-    rotate([180,0,0]) translate([0,0, - (disc_height - bottom_height)]) holed_valve_disc();
+    rotate([180,0,0]) translate([0,0, - (valve_disc_height - bottom_height)]) holed_valve_disc();
 
     translate([0,0, - clip_inbetween_height/2 + clip_thickness/2])
     rotate([180,0,0]) holed_piston_disc();     
@@ -203,8 +209,8 @@ module draw_animation() {
 
 module draw_print() {
 //       for ( i = [0:num_of_pairs+1] ) {
-           translate([cylinder_diameter + 2, 0,disc_height]) rotate([180,0,0]) holed_piston_disc();
-           translate([0, 0,disc_height]) rotate([180,0,0]) holed_valve_disc();
+           translate([cylinder_diameter + 2, 0, piston_disc_height]) rotate([180,0,0]) holed_piston_disc();
+           translate([0, 0,valve_disc_height]) rotate([180,0,0]) holed_valve_disc();
   //     }
 }
 
