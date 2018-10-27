@@ -1,18 +1,18 @@
-insert_height=13.00;
-insert_width=7.5;
-insert_length=19.00;
+insert_height=15.00;
+insert_width=10;
+insert_length=20.00;
 
 insert_center_hole_length_offset=10.0;
 insert_center_hole_width=5.5;
 
 insert_middle_space_thickness = 1.5;
 
-insert_wall_thickness=2.5;
+insert_wall_thickness=2.2;
 insert_wall_height=16.0;
 
 handle_depth=24;
 handle_width=57;
-handle_position_on_shorter_end=20;
+handle_position_on_shorter_end=25;
 
 handle_middle_cylinder_height=handle_width-handle_depth;
 
@@ -67,4 +67,10 @@ module draw_assembly() {
 }
 
 
-draw_assembly();
+//this final difference was to quick-fix the originally too shallow insert
+difference () {
+    draw_assembly();
+    translate([-(insert_height-2*insert_wall_thickness)/2, handle_width/2-handle_position_on_shorter_end+insert_wall_thickness, -insert_length*0.75]) {
+          cube([insert_height-2*insert_wall_thickness, insert_width/2+insert_wall_thickness/2, insert_length*4]);
+    }
+}
